@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:tracer_alumni_v1/model/prodi.dart';
 import 'package:tracer_alumni_v1/service_api.dart';
+import 'package:tracer_alumni_v1/view/insert_prodi_dialog.dart';
 
 class ProdiView extends StatelessWidget {
   ProdiView({super.key});
@@ -20,6 +21,14 @@ class ProdiView extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(title: Text('Prodi'),),
+       floatingActionButton: FloatingActionButton(
+        child: const Icon(Icons.add),
+        onPressed: () {
+          showDialog(
+              context: context,
+              builder: (context) => const InsertProdisDialog());
+        },
+      ),
       body: FutureBuilder<List<Prodi>>(
         future: fetchProdiList(),
         builder: (BuildContext context, AsyncSnapshot<List<Prodi>> snapshot) {

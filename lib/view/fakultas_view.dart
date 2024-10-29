@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:tracer_alumni_v1/model/fakultas.dart';
 import 'package:tracer_alumni_v1/service_api.dart';
+import 'package:tracer_alumni_v1/view/insert_fakultas_dialog.dart';
 
 class FakultasView extends StatelessWidget {
   FakultasView({super.key});
@@ -19,7 +20,15 @@ class FakultasView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text('fakultas'),),
+      appBar: AppBar(title: Text('Fakultas'),),
+       floatingActionButton: FloatingActionButton(
+        child: const Icon(Icons.add),
+        onPressed: () {
+          showDialog(
+              context: context,
+              builder: (context) => const InsertFakultasDialog());
+        },
+      ),
       body: FutureBuilder<List<Fakultas>>(
         future: fetchFakultasList(),
         builder: (BuildContext context, AsyncSnapshot<List<Fakultas>> snapshot) {

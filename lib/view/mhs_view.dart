@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:gap/gap.dart';
 import 'package:tracer_alumni_v1/model/mahasiswa.dart';
 import 'package:tracer_alumni_v1/service_api.dart';
+import 'package:tracer_alumni_v1/view/insert_mhs_dialog.dart';
 
 class MhsView extends StatelessWidget {
   MhsView({super.key});
@@ -19,10 +21,21 @@ class MhsView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text('Mahasiswa'),),
+      appBar: AppBar(
+        title: const Text('Mahasiswa'),
+      ),
+      floatingActionButton: FloatingActionButton(
+        child: const Icon(Icons.add),
+        onPressed: () {
+          showDialog(
+              context: context,
+              builder: (context) => const InsertMhsDialog());
+        },
+      ),
       body: FutureBuilder<List<Mahasiswa>>(
         future: fetchMahasiswaList(),
-        builder: (BuildContext context, AsyncSnapshot<List<Mahasiswa>> snapshot) {
+        builder:
+            (BuildContext context, AsyncSnapshot<List<Mahasiswa>> snapshot) {
           // Handle different states
           if (snapshot.connectionState == ConnectionState.waiting) {
             return const Center(
@@ -34,32 +47,62 @@ class MhsView extends StatelessWidget {
           } else if (snapshot.hasData) {
             final List<Mahasiswa>? mahasiswaList = snapshot.data;
             if (mahasiswaList != null && mahasiswaList.isNotEmpty) {
-                        // Create DataTable to display Mahasiswa data
-              return SingleChildScrollView(
-                scrollDirection: Axis.horizontal,
-                child: DataTable(
-                  columns: const [
-                    DataColumn(label: Text('ID')),
-                    DataColumn(label: Text('Name')),
-                    DataColumn(label: Text('NIM')),
-                    DataColumn(label: Text('Tahun Lulus')),
-                    DataColumn(label: Text('No Telp')),
-                    DataColumn(label: Text('Email')),
-                    DataColumn(label: Text('Alamat')),
-                  ],
-                  rows: mahasiswaList
-                      .map(
-                        (mahasiswa) => DataRow(cells: [
-                          DataCell(Text(mahasiswa.id.toString())),
-                          DataCell(Text(mahasiswa.name)),
-                          DataCell(Text(mahasiswa.nim)),
-                          DataCell(Text(mahasiswa.tahunLulus)),
-                          DataCell(Text(mahasiswa.noTelp)),
-                          DataCell(Text(mahasiswa.email)),
-                          DataCell(Text(mahasiswa.alamat)),
-                        ]),
-                      )
-                      .toList(),
+              return ListView.builder(
+                itemCount: mahasiswaList.length,
+                itemBuilder: (context, index) => Card(
+                  clipBehavior: Clip.hardEdge,
+                  margin: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+                  child: Container(
+                    color: index.isOdd ? Colors.red[100] : Colors.blue[100],
+                    child: Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: Row(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Column(
+                            mainAxisSize: MainAxisSize.max,
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              const Text('ID'),
+                              Text(mahasiswaList[index].id.toString())
+                            ],
+                          ),
+                          const SizedBox(width: 16),
+                          const Flexible(
+                            flex: 1,
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                Text('Nama'),
+                                Text('NIM'),
+                                Text('Lulus'),
+                                Text('Alamat'),
+                                Text('No Hp'),
+                                Text('Email'),
+                              ],
+                            ),
+                          ),
+                          const SizedBox(width: 8),
+                          Expanded(
+                            flex: 3,
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                Text(mahasiswaList[index].name),
+                                Text(mahasiswaList[index].nim),
+                                Text(mahasiswaList[index].tahunLulus),
+                                Text(mahasiswaList[index].alamat),
+                                Text(mahasiswaList[index].noTelp),
+                                Text(mahasiswaList[index].email),
+                              ],
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
                 ),
               );
             } else {
