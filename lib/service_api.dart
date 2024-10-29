@@ -1,7 +1,7 @@
 import 'package:odoo_rpc/odoo_rpc.dart';
 
 class ServiceApi {
-    final orpc = OdooClient('http://192.168.99.254:10017');
+    final orpc = OdooClient('http://odoo.efrosine.my.id');
 
   Future<void> auth() async{
     try{
