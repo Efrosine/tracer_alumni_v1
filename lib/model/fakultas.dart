@@ -7,4 +7,12 @@ class Fakultas {
   factory Fakultas.fromMap(Map<String,dynamic> map){
     return Fakultas(id: map['id'], name: map['name']);
   }
+
+    Map<String, dynamic> toMap() {
+    return {
+      'id': id,
+      'name': name,
+    };
+  }
+  
 }

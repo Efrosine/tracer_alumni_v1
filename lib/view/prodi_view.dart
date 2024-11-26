@@ -2,14 +2,20 @@ import 'package:flutter/material.dart';
 import 'package:tracer_alumni_v1/model/prodi.dart';
 import 'package:tracer_alumni_v1/service_api.dart';
 import 'package:tracer_alumni_v1/view/insert_prodi_dialog.dart';
+import 'package:tracer_alumni_v1/view/signin_page.dart';
 
-class ProdiView extends StatelessWidget {
+class ProdiView extends StatefulWidget {
   ProdiView({super.key});
 
+  @override
+  State<ProdiView> createState() => _ProdiViewState();
+}
+
+class _ProdiViewState extends State<ProdiView> {
   final ServiceApi serviceApi = ServiceApi();
 
   Future<List<Prodi>> fetchProdiList() async {
-    await serviceApi.auth();
+    await serviceApi.auth('admin@gmail.com', 'admin123');
     final getData = await serviceApi.getProdi();
 
     // Casting and converting to list of Prodi objects
@@ -20,15 +26,32 @@ class ProdiView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text('Prodi'),),
-       floatingActionButton: FloatingActionButton(
-        child: const Icon(Icons.add),
-        onPressed: () {
-          showDialog(
-              context: context,
-              builder: (context) => const InsertProdisDialog());
-        },
+      appBar: AppBar(
+        title: Text('Prodi'),
+        actions: [
+          IconButton(
+              onPressed: () {
+                Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => LoginPage(),
+                    ));
+              },
+              icon: Icon(Icons.logout))
+        ],
       ),
+      floatingActionButton: isLogin
+          ? FloatingActionButton(
+              child: const Icon(Icons.add),
+              onPressed: () {
+                showDialog(
+                    context: context,
+                    builder: (context) => InsertProdisDialog()).then(
+                  (value) => setState(() {}),
+                );
+              },
+            )
+          : null,
       body: FutureBuilder<List<Prodi>>(
         future: fetchProdiList(),
         builder: (BuildContext context, AsyncSnapshot<List<Prodi>> snapshot) {
@@ -51,7 +74,32 @@ class ProdiView extends StatelessWidget {
                   return ListTile(
                     title: Text(prodi.name),
                     leading: Text(
-                        'ID: ${prodi.id}'), // Optional: Display ID as subtitle
+                      'ID: ${prodi.id}',
+                    ),
+                    trailing: isLogin
+                        ? Wrap(
+                            children: [
+                              IconButton(
+                                onPressed: () {
+                                  showDialog(
+                                      context: context,
+                                      builder: (context) => InsertProdisDialog(
+                                            prodi: prodi,
+                                          )).then((value) => setState(() {}));
+                                },
+                                icon: const Icon(Icons.edit),
+                              ),
+                              IconButton(
+                                onPressed: () async {
+                                  await serviceApi.delProdi(prodi.id);
+                                  setState(() {});
+                                },
+                                icon: const Icon(Icons.delete),
+                              ),
+                            ],
+                          )
+                        : null,
+                    // Optional: Display ID as subtitle
                   );
                 },
               );

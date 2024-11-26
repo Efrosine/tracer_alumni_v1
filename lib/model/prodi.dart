@@ -10,4 +10,12 @@ class Prodi {
       name: map['name'], // Access 'name' from the map
     );
   }
+
+    Map<String, dynamic> toMap() {
+    return {
+      'id': id,
+      'name': name,
+    };
+  }
+
 }

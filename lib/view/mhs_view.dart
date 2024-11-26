@@ -3,6 +3,7 @@ import 'package:gap/gap.dart';
 import 'package:tracer_alumni_v1/model/mahasiswa.dart';
 import 'package:tracer_alumni_v1/service_api.dart';
 import 'package:tracer_alumni_v1/view/insert_mhs_dialog.dart';
+import 'package:tracer_alumni_v1/view/signin_page.dart';
 
 class MhsView extends StatelessWidget {
   MhsView({super.key});
@@ -10,7 +11,8 @@ class MhsView extends StatelessWidget {
   final ServiceApi serviceApi = ServiceApi();
 
   Future<List<Mahasiswa>> fetchMahasiswaList() async {
-    await serviceApi.auth();
+    await serviceApi.auth('admin@gmail.com', 'admin123');
+   
     final getData = await serviceApi.getMhs();
 
     // Casting and converting to list of Mahasiswa objects
@@ -23,15 +25,25 @@ class MhsView extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         title: const Text('Mahasiswa'),
+         actions: [
+          IconButton(
+              onPressed: () {
+                Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => LoginPage(),
+                    ));
+              },
+              icon: Icon(Icons.logout))
+        ],
       ),
-      floatingActionButton: FloatingActionButton(
+      floatingActionButton:isLogin? FloatingActionButton(
         child: const Icon(Icons.add),
         onPressed: () {
           showDialog(
-              context: context,
-              builder: (context) => const InsertMhsDialog());
+              context: context, builder: (context) => const InsertMhsDialog());
         },
-      ),
+      ):null,
       body: FutureBuilder<List<Mahasiswa>>(
         future: fetchMahasiswaList(),
         builder:
@@ -51,7 +63,8 @@ class MhsView extends StatelessWidget {
                 itemCount: mahasiswaList.length,
                 itemBuilder: (context, index) => Card(
                   clipBehavior: Clip.hardEdge,
-                  margin: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+                  margin:
+                      const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
                   child: Container(
                     color: index.isOdd ? Colors.red[100] : Colors.blue[100],
                     child: Padding(
@@ -69,7 +82,7 @@ class MhsView extends StatelessWidget {
                           ),
                           const SizedBox(width: 16),
                           const Flexible(
-                            flex: 1,
+                            flex: 2,
                             child: Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               mainAxisSize: MainAxisSize.min,
@@ -80,6 +93,7 @@ class MhsView extends StatelessWidget {
                                 Text('Alamat'),
                                 Text('No Hp'),
                                 Text('Email'),
+                                Text('Status Saat Ini')
                               ],
                             ),
                           ),
@@ -96,6 +110,7 @@ class MhsView extends StatelessWidget {
                                 Text(mahasiswaList[index].alamat),
                                 Text(mahasiswaList[index].noTelp),
                                 Text(mahasiswaList[index].email),
+                                Text(mahasiswaList[index].status),
                               ],
                             ),
                           ),

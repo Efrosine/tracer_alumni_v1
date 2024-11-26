@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:tracer_alumni_v1/model/fakultas.dart';
 import 'package:tracer_alumni_v1/service_api.dart';
 import 'package:tracer_alumni_v1/view/insert_fakultas_dialog.dart';
+import 'package:tracer_alumni_v1/view/signin_page.dart';
 
 class FakultasView extends StatelessWidget {
   FakultasView({super.key});
@@ -9,7 +10,7 @@ class FakultasView extends StatelessWidget {
   final ServiceApi serviceApi = ServiceApi();
 
   Future<List<Fakultas>> fetchFakultasList() async {
-    await serviceApi.auth();
+    await serviceApi.auth('admin@gmail.com', 'admin123');
     final getData = await serviceApi.getFakultas();
 
     // Casting and converting to list of fakultas objects
@@ -20,18 +21,32 @@ class FakultasView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text('Fakultas'),),
-       floatingActionButton: FloatingActionButton(
+      appBar: AppBar(
+        title: Text('Fakultas'),
+         actions: [
+          IconButton(
+              onPressed: () {
+                Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => LoginPage(),
+                    ));
+              },
+              icon: Icon(Icons.logout))
+        ],
+      ),
+      floatingActionButton: isLogin? FloatingActionButton(
         child: const Icon(Icons.add),
         onPressed: () {
           showDialog(
               context: context,
               builder: (context) => const InsertFakultasDialog());
         },
-      ),
+      ):null,
       body: FutureBuilder<List<Fakultas>>(
         future: fetchFakultasList(),
-        builder: (BuildContext context, AsyncSnapshot<List<Fakultas>> snapshot) {
+        builder:
+            (BuildContext context, AsyncSnapshot<List<Fakultas>> snapshot) {
           // Handle different states
           if (snapshot.connectionState == ConnectionState.waiting) {
             return const Center(

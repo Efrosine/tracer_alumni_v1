@@ -12,16 +12,26 @@ class NavBar extends StatefulWidget {
 }
 
 class _NavBarState extends State<NavBar> {
-  List<Widget> pages = [ProdiView(),FakultasView(),MhsView()];
+  List<Widget> pages = [ProdiView(), FakultasView(), MhsView()];
   int pageCount = 0;
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      bottomNavigationBar: CurvedNavigationBar(
-        items: [
-          Icon(Icons.book),
-          Icon(Icons.school),
-          Icon(Icons.person),
+      bottomNavigationBar: BottomNavigationBar(
+        currentIndex: pageCount,
+        items: const [
+          BottomNavigationBarItem(
+            icon: Icon(Icons.book),
+            label: "Prodi",
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.home_max_rounded),
+            label: "Fakultas",
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.person),
+            label: "Profil",
+          ),
         ],
         onTap: (value) => setState(
           () {
