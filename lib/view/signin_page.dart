@@ -77,10 +77,10 @@ class LoginPage extends StatelessWidget {
                                 String password =
                                     passwordController.text.trim();
                                 print('email:$email,pw:$password,');
-                                if (email != 'admin@gmail.com' &&
-                                    password != 'admin123') {
-                                  throw Exception('Email atau password salah');
-                                }
+                                // if (email != 'admin@gmail.com' &&
+                                //     password != 'admin123') {
+                                //   throw Exception('Email atau password salah');
+                                // }
                                 await serviceApi.auth(email, password);
 
                                 Navigator.pushReplacement(

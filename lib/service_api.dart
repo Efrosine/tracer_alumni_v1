@@ -13,7 +13,7 @@ class ServiceApi {
       print('Instaled modules : ${res.toString()}');
     } on OdooException catch (e) {
       print(e);
-      orpc.close();
+      throw Exception(e);
     }
   }
 
